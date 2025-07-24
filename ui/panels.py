@@ -478,6 +478,10 @@ def draw_sdf_source_info(layout: bpy.types.UILayout, context: bpy.types.Context)
     blend_row = layout.row(align=True)
     blend_row.prop(obj_for_props, '["sdf_blend_factor"]', text="Blend Factor")
 
+    # --- Color ---
+    color_row = layout.row(align=True)
+    color_row.prop(obj_for_props, 'sdf_color', text="Color")
+
     use_loft = obj_for_props.get("sdf_use_loft", False)
     use_morph = obj_for_props.get("sdf_use_morph", False) and not use_loft
     use_clearance = obj_for_props.get("sdf_use_clearance", False) and not use_loft and not use_morph

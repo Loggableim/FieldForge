@@ -618,16 +618,17 @@ class OBJECT_OT_sdf_manual_update(Operator):
         bounds_obj = context.active_object; bounds_name = bounds_obj.name
         print(f"FieldForge: Manual final update triggered for {bounds_name}.")
         
-        
         if ff_update._updates_pending.get(bounds_name, False):
              self.report({'WARNING'}, f"Update already in progress for {bounds_name}."); return {'CANCELLED'}
-        current_state = ff_state.get_current_sdf_state(context, bounds_obj) # Use state module function
-        if not current_state: self.report({'ERROR'}, f"Failed get state for {bounds_name}."); return {'CANCELLED'}
-        ff_update._updates_pending[bounds_name] = True
-        try:
-            bpy.app.timers.register(lambda name=bounds_name, state=current_state: ff_update.run_sdf_update(name, state, is_viewport_update=False), first_interval=0.0)
-        except Exception as e: print(f"ERROR: Reg FINAL update timer: {e}"); ff_update._updates_pending[bounds_name] = False; self.report({'ERROR'}, f"Failed schedule update."); return {'CANCELLED'}
-        self.report({'INFO'}, f"Scheduled final update for {bounds_name}."); return {'FINISHED'}
+        
+        current_state = ff_state.get_current_sdf_state(context, bounds_obj)
+        if not current_state:
+            self.report({'ERROR'}, f"Failed to get current state for {bounds_name}.")
+            return {'CANCELLED'}
+
+        ff_update.run_sdf_update(bounds_name, current_state, is_viewport_update=False)
+        self.report({'INFO'}, f"Scheduled final update for {bounds_name}.");
+        return {'FINISHED'}
 
 
 # --- UI Interaction Operators ---

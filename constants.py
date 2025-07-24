@@ -8,6 +8,8 @@ Constants and default settings used throughout the FieldForge addon.
 # Marker for the main SDF Bounds controller Empty object
 SDF_BOUNDS_MARKER = "is_sdf_bounds"
 
+SDF_UPDATE_ID_PROP = "sdf_update_id"
+
 # Custom property on the Bounds object storing the name of the target result Mesh object
 SDF_RESULT_OBJ_NAME_PROP = "sdf_result_object_name"
 
@@ -20,6 +22,9 @@ SDF_CANVAS_MARKER = "is_sdf_canvas"
 
 SDF_LINK_TARGET_NAME_PROP = "sdf_link_target_name"
 SDF_PROCESS_LINKED_CHILDREN_PROP = "sdf_process_linked_children"
+
+SDF_COLOR_ATTRIBUTE_NAME = "sdf_color_attribute"
+SDF_MATERIAL_NAME = "FieldForge_SDF_Material"
 
 # Axis constants on Python side for C++
 AXIS_X_BIT = 1

@@ -174,6 +174,16 @@ def register():
     except Exception as e:
         print(f"  ERROR: Failed to schedule initial update check: {e}")
 
+    # Define custom properties
+    bpy.types.Object.sdf_color = bpy.props.FloatVectorProperty(
+        name="SDF Color",
+        subtype='COLOR',
+        default=(1.0, 1.0, 1.0, 1.0),
+        size=4,
+        min=0.0, max=1.0,
+        description="Color for this SDF shape"
+    )
+
     # Force redraw after registration
     drawing.tag_redraw_all_view3d()
 
@@ -235,6 +245,9 @@ def unregister():
         bpy.types.VIEW3D_MT_add.remove(menus.menu_func)
     except ValueError: pass # Already removed
     except Exception as e: print(f"  WARN: Error removing menu item: {e}")
+
+    # Delete custom properties
+    del bpy.types.Object.sdf_color
 
 
     # Clear Timers and State (call functions in relevant modules)
