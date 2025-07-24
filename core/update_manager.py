@@ -154,20 +154,36 @@ def _color_calculation_worker(result_q, is_cancelled_flag, verts_copy, matrix_wo
             
             total_weight = 0.0
             final_color = Vector((0.0, 0.0, 0.0, 0.0))
+            min_dist = float('inf')
+            nearest_color = None
+
+            # Weighting parameter, smaller values mean a wider blend
+            k = 10.0
 
             for shape_name, (sdf_shape, color) in individual_sdf_shapes.items():
                 if not (sdf_shape is None or sdf_shape is lf.emptiness()):
                     try:
                         dist = sdf_shape(vertex_world_pos.x, vertex_world_pos.y, vertex_world_pos.z)
-                        if abs(dist) < influence_threshold:
-                            weight = 1.0 - (abs(dist) / influence_threshold)
-                            final_color += Vector(color) * weight
-                            total_weight += weight
+                        # Use exponential falloff for weighting
+                        weight = math.exp(-k * abs(dist))
+                        final_color += Vector(color) * weight
+                        total_weight += weight
+
+                        if abs(dist) < min_dist:
+                            min_dist = abs(dist)
+                            nearest_color = color
+
                     except Exception as e:
                         print(f"FieldForge DEBUG: Error during color calculation for shape {shape_name}: {e}")
             
-            if total_weight > 0:
+            if total_weight > 1e-6:
                 final_color /= total_weight
+            elif nearest_color is not None:
+                # If no weight but we found a nearest shape, use its color
+                final_color = Vector(nearest_color)
+            else:
+                # Default to white as a last resort
+                final_color = Vector((1.0, 1.0, 1.0, 1.0))
             
             vertex_colors[i] = final_color
 
